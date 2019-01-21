@@ -20,7 +20,8 @@ SRC = 	src/main.c \
 		src/shaders.c \
 		src/shaderglsl.c \
 		src/errors.c \
-		src/draw.c
+		src/draw.c \
+		src/keyhook.c
 
 OBJ = 	main.o \
 		init.o \
@@ -30,7 +31,8 @@ OBJ = 	main.o \
 		shaders.o \
 		shaderglsl.o \
 		errors.o \
-		draw.o
+		draw.o \
+		keyhook.o
 		
 HEADER =./lib/libft/libft.h\
 		./lib/glfw/include/GLFW/glfw3.h\

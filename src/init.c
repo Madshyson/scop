@@ -12,24 +12,6 @@
 
 #include "../inc/scop.h"
 
-static void				debugparsing(t_objdata *obj)
-{
-	ft_putstr("Nom du fichier : ");
-	ft_putendl(obj->filename);
-	ft_putstr("error status : ");
-	ft_putnbr(obj->error);
-	ft_putchar('\n');
-	ft_putstr("Nombre de Vertices : ");
-	ft_putnbr(obj->nbvertices);
-	ft_putchar('\n');
-	ft_putstr("Nombre de Faces : ");
-	ft_putnbr(obj->nbfaces);
-	ft_putchar('\n');
-	ft_putstr("Nombre de Points a dessiner : ");
-	ft_putnbr(obj->nbpoints);
-	ft_putchar('\n');
-}
-
 t_gldata				initgl(t_objdata *obj)
 {
 	t_gldata gl;
@@ -43,7 +25,7 @@ t_gldata				initgl(t_objdata *obj)
 	glGenBuffers(1, &gl.points_vbo);
 	gl.texture_vbo = 0;
 	glGenBuffers(1, &gl.texture_vbo);
-	gl.textid = loadbmp_custom("./textures/Grass01.bmp");
+	gl.textid = loadbmp_custom("./textures/mlp2.bmp");
 	gl.vao = 0;
 	glGenVertexArrays(1, &gl.vao);
 	glBindVertexArray(gl.vao);
@@ -70,9 +52,11 @@ t_objdata				*initobj(int ac, char **av)
 	obj->drawmode = 0;
 	obj->shaderselect = 0;
 	obj->rotating = 1;
-	obj->texturing = 1;
+	obj->texturing = 0;
+	obj->keypress = 0;
+	obj->decx = 0.0f;
+	obj->decy = 0.0f;
 	obj = dataparser(ac, av, obj);
-	debugparsing(obj);
 	return (obj);
 }
 
@@ -82,7 +66,7 @@ static GLFWwindow		*createwin(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	return (glfwCreateWindow(1000, 1000, "SCOP", NULL, NULL));
+	return (glfwCreateWindow(1500, 1500, "SCOP", NULL, NULL));
 }
 
 t_contextdata			initcontext(void)

@@ -12,7 +12,27 @@
 
 #include "../inc/scop.h"
 
-t_objdata		*facealloc(t_flist *f, t_objdata *obj)
+void			verticalloc(t_vlist *v, t_objdata *obj)
+{
+	if (!obj->vertices)
+	{
+		obj->vertices = v;
+		obj->vertices->next = NULL;
+		obj->verticesstart = obj->vertices;
+	}
+	else
+	{
+		v->next = NULL;
+		obj->vertices = obj->verticesstart;
+		while (obj->vertices->next)
+		{
+			obj->vertices = obj->vertices->next;
+		}
+		obj->vertices->next = v;
+	}
+}
+
+void			facealloc(t_flist *f, t_objdata *obj)
 {
 	if (!obj->faces)
 	{
@@ -28,7 +48,6 @@ t_objdata		*facealloc(t_flist *f, t_objdata *obj)
 		}
 		obj->faces->next = f;
 	}
-	return (obj);
 }
 
 t_objdata		*seterror(int errorval, t_objdata *obj)

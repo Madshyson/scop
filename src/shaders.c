@@ -42,25 +42,16 @@ float					*createshadermulticolor(t_objdata *obj)
 {
 	int		i;
 	float	*shaderpoints;
+	float	randn;
 
 	i = 0;
 	shaderpoints = malloc(obj->nbpoints * sizeof(float));
+	srand(time(NULL));
 	while (i <= obj->nbpoints)
 	{
-		if (i % 9 == 0)
-			shaderpoints[i] = 1.0;
-		if (i % 9 == 1)
-			shaderpoints[i] = 0.0;
-		if (i % 9 == 2)
-			shaderpoints[i] = 0.0;
-		if (i % 9 == 3)
-			shaderpoints[i] = 0.0;
-		if (i % 9 == 4)
-			shaderpoints[i] = 1.0;
-		if (i % 9 == 5 || i % 9 == 6 || i % 9 == 7)
-			shaderpoints[i] = 0.0;
-		if (i % 9 == 8)
-			shaderpoints[i] = 1.0;
+		randn = (((rand() % 7) + 2) / 10.0);
+		randn += ((rand() % 200) / 1000.0);
+		shaderpoints[i] = randn;
 		i++;
 	}
 	return (shaderpoints);
@@ -70,15 +61,19 @@ float					*createshadergreyfaces(t_objdata *obj)
 {
 	int		i;
 	float	*shaderpoints;
+	float	randn;
 
 	i = 0;
 	shaderpoints = malloc(obj->nbpoints * sizeof(float));
+	srand(time(NULL));
 	while (i <= obj->nbpoints)
 	{
-		if (i % 18 >= 0 && i % 18 < 9)
-			shaderpoints[i] = 0.2;
-		if (i % 18 >= 9 && i % 18 <= 17)
-			shaderpoints[i] = 0.7;
+		if (i % 9 == 0)
+		{
+			randn = (((rand() % 6) + 2) / 10.0);
+			randn += ((rand() % 200) / 1000.0);
+		}
+		shaderpoints[i] = randn;
 		i++;
 	}
 	return (shaderpoints);
@@ -117,5 +112,6 @@ GLuint					loadbmp_custom(const char *imagepath)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, t.width, t.height, 0, GL_BGR, GL_UNSIGNED_BYTE, t.data);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	free(t.data);
 	return (t.textureid);
 }

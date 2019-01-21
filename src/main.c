@@ -76,13 +76,14 @@ static float			*creatingpoints(t_objdata *obj)
 	i = 0;
 	obj->faces = obj->facesstart;
 	points = selectpoints(obj, points, i, 0);
+	points = centerpoints(obj, points);
 	return (points);
 }
 
 int						main(int argc, char **argv)
 {
 	float			*points;
-	t_gldata		gl;
+	t_gldata		gld;
 	t_contextdata	context;
 	t_objdata		*obj;
 
@@ -93,17 +94,17 @@ int						main(int argc, char **argv)
 	if (obj->error != 0)
 		return (0);
 	points = creatingpoints(obj);
-	gl = initgl(obj);
+	gld = initgl(obj);
 	while (!glfwWindowShouldClose(context.window))
 	{
 		points = rotate(points, obj);
 		points = key_cb(context.window, obj, points);
-		gl = perspective(obj, points, gl);
-		managebuffers(obj, gl);
-		gl = manageshader(gl);
-		draw(obj, gl, context);
+		gld = perspective(obj, points, gld);
+		managebuffers(obj, gld);
+		gld = manageshader(gld);
+		draw(obj, gld, context);
 	}
 	glfwTerminate();
-	fullfree(obj, points, gl);
+	fullfree(obj, points, gld);
 	return (0);
 }

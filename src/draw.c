@@ -12,6 +12,33 @@
 
 #include "../inc/scop.h"
 
+float			*centerpoints(t_objdata *obj, float *points)
+{
+	int		i;
+	float	limitmax;
+	float	limitmin;
+
+	i = 2;
+	limitmin = 0;
+	limitmax = 0;
+	while (i + 3 < obj->nbpoints)
+	{
+		if (points[i] < limitmin)
+			limitmin = points[i];
+		if (points[i] > limitmax)
+			limitmax = points[i];
+		i += 3;
+	}
+	printf("centering : %f / %f\n", limitmin, limitmax);
+	i = 2;
+	while (i < obj->nbpoints)
+	{
+		points[i] -= (limitmin + limitmax) / 2;
+		i += 3;
+	}
+	return (points);
+}
+
 float			*selectpoints(t_objdata *obj, float *pt, int i, int j)
 {
 	int pointcount;
@@ -53,14 +80,14 @@ t_gldata		perspective(t_objdata *obj, float *pt, t_gldata gl)
 		if (pt[i] < 0.0)
 		{
 			gl.dp[i] = pt[i] * (1 + ((-1 * pt[i]) / 5));
-			gl.dp[i - 1] = pt[i - 1] * (1 + ((-1 * pt[i]) / 5));
-			gl.dp[i - 2] = pt[i - 2] * (1 + ((-1 * pt[i]) / 5));
+			gl.dp[i - 1] = (pt[i - 1] + obj->decy) * (1 + ((-1 * pt[i]) / 5));
+			gl.dp[i - 2] = (pt[i - 2] + obj->decx) * (1 + ((-1 * pt[i]) / 5));
 		}
 		else
 		{
 			gl.dp[i] = pt[i] * (1 / (1 + ((pt[i]) / 5)));
-			gl.dp[i - 1] = pt[i - 1] * (1 / (1 + ((pt[i]) / 5)));
-			gl.dp[i - 2] = pt[i - 2] * (1 / (1 + ((pt[i]) / 5)));
+			gl.dp[i - 1] = (pt[i - 1] + obj->decy) * (1 / (1 + ((pt[i]) / 5)));
+			gl.dp[i - 2] = (pt[i - 2] + obj->decx) * (1 / (1 + ((pt[i]) / 5)));
 		}
 		i++;
 	}
@@ -77,14 +104,14 @@ void			draw(t_objdata *obj, t_gldata gl, t_contextdata ct)
 		glUseProgram(gl.shader_programmet);
 	glBindVertexArray(gl.vao);
 	if (obj->drawmode == 0)
-		glDrawArrays(GL_TRIANGLES, 0, obj->nbpoints);
+		glDrawArrays(GL_TRIANGLES, 0, obj->nbpoints / 3);
 	else if (obj->drawmode == 1)
-		glDrawArrays(GL_LINE_LOOP, 0, obj->nbpoints);
+		glDrawArrays(GL_LINES, 0, obj->nbpoints / 3);
 	glEnable(GL_CULL_FACE);
 	if (obj->drawmode == 0)
-		glDrawArrays(GL_TRIANGLES, 0, obj->nbpoints);
+		glDrawArrays(GL_TRIANGLES, 0, obj->nbpoints / 3);
 	else if (obj->drawmode == 1)
-		glDrawArrays(GL_LINE_LOOP, 0, obj->nbpoints);
+		glDrawArrays(GL_LINES, 0, obj->nbpoints / 3);
 	glfwPollEvents();
 	glBindTexture(GL_TEXTURE_2D, gl.textid);
 	glfwSwapBuffers(ct.window);

@@ -12,25 +12,25 @@
 
 #include "../inc/scop.h"
 
-static t_objdata	*verticalloc(t_vlist *v, t_objdata *obj)
+static void			freerecur(char **coord, char *line)
 {
-	if (!obj->vertices)
+	int i;
+	int count;
+
+	i = 0;
+	count = 0;
+	while (i < (int)ft_strlen(line))
 	{
-		obj->vertices = v;
-		obj->vertices->next = NULL;
-		obj->verticesstart = obj->vertices;
+		if (line[i] == ' ')
+			count++;
+		i++;
 	}
-	else
+	while (count >= 0)
 	{
-		v->next = NULL;
-		obj->vertices = obj->verticesstart;
-		while (obj->vertices->next)
-		{
-			obj->vertices = obj->vertices->next;
-		}
-		obj->vertices->next = v;
+		free(coord[count]);
+		count--;
 	}
-	return (obj);
+	free(coord);
 }
 
 t_objdata			*setvertices(t_objdata *obj, char *line)
@@ -49,7 +49,8 @@ t_objdata			*setvertices(t_objdata *obj, char *line)
 		v->vertice[i - 1] = atof(coord[i]);
 		i++;
 	}
-	obj = verticalloc(v, obj);
+	verticalloc(v, obj);
+	freerecur(coord, line);
 	return (obj);
 }
 
@@ -58,9 +59,9 @@ static t_flist		*createtfromq(t_flist *f, char **coord)
 	t_flist *n;
 
 	n = malloc(sizeof(t_flist));
-	n->face[0] = atoi(coord[3]);
-	n->face[1] = atoi(coord[4]);
-	n->face[2] = atoi(coord[1]);
+	n->face[0] = atoi(coord[1]);
+	n->face[1] = atoi(coord[3]);
+	n->face[2] = atoi(coord[4]);
 	n->next = NULL;
 	f->next = n;
 	return (f);
@@ -85,10 +86,11 @@ t_objdata			*setfaces(t_objdata *obj, char *line)
 	if (i == 5)
 	{
 		f = createtfromq(f, coord);
-		obj->nbpoints += 9;
+		obj->nbpoints += 6;
 	}
 	obj->nbpoints += (i - 1) * 3;
-	obj = facealloc(f, obj);
+	facealloc(f, obj);
+	freerecur(coord, line);
 	return (obj);
 }
 
@@ -112,6 +114,7 @@ t_objdata			*dataparser(int ac, char **av, t_objdata *obj)
 				setfaces(obj, line);
 			free(line);
 		}
+		fd = close(fd);
 	}
 	else
 		obj = seterror(1, obj);

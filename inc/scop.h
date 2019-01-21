@@ -23,6 +23,7 @@
 
 # include "../lib/libft/libft.h"
 # define GLFW_INCLUDE_GLCOREARB
+# define BUFF 1024
 # include "../lib/glfw/include/GLFW/glfw3.h"
 
 typedef struct			s_vlist
@@ -48,10 +49,13 @@ typedef struct			s_objdata
 	t_vlist				*vertices;
 	t_flist				*faces;
 	int					error;
+	float				decx;
+	float				decy;
 	int					drawmode;
 	int					shaderselect;
 	int					rotating;
 	int					texturing;
+	int					keypress;
 }						t_objdata;
 
 typedef struct			s_matrix
@@ -126,10 +130,13 @@ GLuint					loadbmp_custom(const char *imagepath);
 int						main(int argc, char **argv);
 t_objdata				*seterror(int errorval, t_objdata *obj);
 int						testgoodfile(char *fn);
-t_objdata				*facealloc(t_flist *f, t_objdata *obj);
+void					facealloc(t_flist *f, t_objdata *obj);
+void					verticalloc(t_vlist *v, t_objdata *obj);
 t_gldata				initgl(t_objdata *obj);
 t_gldata				perspective(t_objdata *obj, float *pt, t_gldata gl);
 void					draw(t_objdata *obj, t_gldata gl, t_contextdata ct);
 float					*selectpoints(t_objdata *obj, float *pt, int i, int j);
+float					*centerpoints(t_objdata *obj, float *points);
+int						setkeyhook(GLFWwindow *win);
 
 #endif

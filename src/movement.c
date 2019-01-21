@@ -12,39 +12,19 @@
 
 #include "../inc/scop.h"
 
-static float	*movex(float *points, t_objdata *obj, int dir)
+static t_objdata	*movex(t_objdata *obj, int dir)
 {
-	int i;
-
-	i = 0;
-	while (i <= obj->nbpoints)
-	{
-		if (i % 3 == 0)
-		{
-			points[i] += 0.01f * dir;
-		}
-		i++;
-	}
-	return (points);
+	obj->decx += 0.04f * dir;
+	return (obj);
 }
 
-static float	*movey(float *points, t_objdata *obj, int dir)
+static t_objdata	*movey(t_objdata *obj, int dir)
 {
-	int i;
-
-	i = 0;
-	while (i <= obj->nbpoints)
-	{
-		if (i % 3 == 1)
-		{
-			points[i] += 0.01f * dir;
-		}
-		i++;
-	}
-	return (points);
+	obj->decy += 0.04f * dir;
+	return (obj);
 }
 
-static float	*movez(float *points, t_objdata *obj, int dir)
+static float		*movez(float *points, t_objdata *obj, int dir)
 {
 	int i;
 
@@ -60,29 +40,50 @@ static float	*movez(float *points, t_objdata *obj, int dir)
 	return (points);
 }
 
-float			*key_cb(GLFWwindow *win, t_objdata *obj, float *points)
+static t_objdata	*keyh(GLFWwindow *win, t_objdata *obj)
+{
+	if (glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		obj->shaderselect = (obj->shaderselect + 1) % 2;
+		obj->keypress = 1;
+	}
+	if (glfwGetKey(win, GLFW_KEY_R) == GLFW_PRESS)
+	{
+		obj->rotating = (obj->rotating + 1) % 2;
+		obj->keypress = 1;
+	}
+	if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		obj->drawmode = (obj->drawmode + 1) % 2;
+		obj->keypress = 1;
+	}
+	if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		obj->texturing = (obj->texturing + 1) % 2;
+		obj->keypress = 1;
+	}
+	return (obj);
+}
+
+float				*key_cb(GLFWwindow *win, t_objdata *obj, float *points)
 {
 	if (glfwGetKey(win, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(win, GL_TRUE);
+	if (setkeyhook(win) == 1)
+		obj->keypress = 0;
 	if (glfwGetKey(win, GLFW_KEY_LEFT) == GLFW_PRESS)
-		points = movex(points, obj, -1);
+		obj = movex(obj, -1);
 	if (glfwGetKey(win, GLFW_KEY_DOWN) == GLFW_PRESS)
-		points = movey(points, obj, -1);
+		obj = movey(obj, -1);
 	if (glfwGetKey(win, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
 		points = movez(points, obj, -1);
 	if (glfwGetKey(win, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		points = movex(points, obj, 1);
+		obj = movex(obj, 1);
 	if (glfwGetKey(win, GLFW_KEY_UP) == GLFW_PRESS)
-		points = movey(points, obj, 1);
+		obj = movey(obj, 1);
 	if (glfwGetKey(win, GLFW_KEY_KP_ADD) == GLFW_PRESS)
 		points = movez(points, obj, 1);
-	if (glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS)
-		obj->shaderselect = (obj->shaderselect + 1) % 2;
-	if (glfwGetKey(win, GLFW_KEY_R) == GLFW_PRESS)
-		obj->rotating = (obj->rotating + 1) % 2;
-	if (glfwGetKey(win, GLFW_KEY_P) == GLFW_PRESS)
-		obj->drawmode = (obj->drawmode + 1) % 2;
-	if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS)
-		obj->texturing = (obj->texturing + 1) % 2;
+	if (obj->keypress != 1)
+		obj = keyh(win, obj);
 	return (points);
 }
