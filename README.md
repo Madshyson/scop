@@ -6,6 +6,6 @@ The executable parse .obj files and display them with different colors and textu
 
 **A few exemples**
 
-![alt text](readMeFiles/screenTeapot.png "The classic teapot")
+![alt text](readMeFiles/screenTeaPot.png "The classic teapot")
 ![alt text](readMeFiles/screenCow.png "A colorfull cow")
 ![alt text](readMeFiles/screen42.png "42")
